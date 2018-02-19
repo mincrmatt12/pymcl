@@ -36,4 +36,4 @@ def convert_atom_node(atom):
     elif node.type == "NUM":
         return expr.IntConstant(int(node))
     else:
-        return expr.StrConstant(str(node))
+        return expr.StrConstant(str(node)[1:-1])
