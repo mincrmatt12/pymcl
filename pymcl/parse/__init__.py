@@ -1,0 +1,2 @@
+class MCLParseError(Exception):
+    pass

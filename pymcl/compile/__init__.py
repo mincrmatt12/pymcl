@@ -1,0 +1,2 @@
+class MCLCompileError(Exception):
+    pass

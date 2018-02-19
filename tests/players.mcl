@@ -1,0 +1,21 @@
+# Simple usage of selectors
+# m2
+
+namespace mclselectors; # defines function namespace
+
+func void main() {
+    print("Selector example!");
+
+    entity nearby = r|dist < 10, type=player|; # declare entity reference as conditions
+    nearby.print("You are near me!"); # print = tellraw
+
+    entityset near = |dist < 10|; # get all entities withtin 10 blocks
+    # near.x causes error
+    foreach (entity e in near) {
+        # foreach syntax is just sugar, commands are actually done with magic
+
+        e.teleport(e.x, e.y+1, e.z); #teleporting an entity to its position +/- a value is done with relative values.
+        # teleporting to constant is done constant
+        # teleporting to expression is done with store
+    }
+}

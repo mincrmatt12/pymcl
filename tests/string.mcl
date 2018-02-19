@@ -1,0 +1,24 @@
+namespace mcl_list;
+
+class node {
+    node next_node;
+    int value;
+
+    func constructor node(int val) {
+        this.value = val;
+    }
+    func void setNext(node n) {
+        this.next_node = n;
+    }
+
+    func void printAll() {
+        print(this.value)
+        if (this.next_node != null) {
+            this.next_node.printAll();
+        }
+    }
+}
+
+func void main() {
+
+}

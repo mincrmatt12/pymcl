@@ -1,0 +1,23 @@
+namespace mclclasses_example
+
+class abstract_class {
+    int value;
+    entity my_entity;
+
+    func constructor abstract_class(int v) {
+        this.value = v;
+    }
+
+    func void addEntity(entity ent) {
+        this.my_entity = ent;
+        this.my_entity["v"] = this.value;
+    }
+}
+
+func void main() {
+    abstract_class my_class(3);
+    abstract_class my_other_class;
+    my_other_class = abstract_class.abstract_class(5);
+
+    print("my_class.v = ", my_class.value);
+}

@@ -1,0 +1,12 @@
+namespace mcloop;
+
+func void main() {
+    for (int i in 1 .. 7) {
+        print("My loop is ", i);
+    }
+
+    int i = 4;
+    while (i > 0) {
+        i--;
+    }
+}

@@ -1,0 +1,13 @@
+# Simple hello world example
+# m2
+
+namespace mclhello # defines function namespace
+
+func void main() {
+    int i = 3 + 4 - 5;
+    i = i+1;
+    int j = 3;
+    i = j + i + 2 - 3;
+
+    print("Hello World", i, j, 2, "abc"); # print output to all (/tellraw)
+}
