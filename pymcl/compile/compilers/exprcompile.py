@@ -1,7 +1,7 @@
 from pymcl.compile import MCLCompileError
-from pymcl.compile.bcs.bcs import LoadConstant, LoadLocal, Add
-from pymcl.compile.bcs.stack import AddStackItem
-from pymcl.repr.expr import IntConstant, StrConstant, AddExpr, Funccall, LocalExpr
+from pymcl.compile.bcs.bcs import LoadConstant, LoadLocal, Add, Mul
+from pymcl.compile.bcs.stack import AddStackItem, MulStackItem
+from pymcl.repr.expr import IntConstant, StrConstant, AddExpr, Funccall, LocalExpr, MulExpr
 
 
 def compile_add_expr(bcs_list, expr: AddExpr):
@@ -9,6 +9,17 @@ def compile_add_expr(bcs_list, expr: AddExpr):
     compile_expr(bcs_list, expr.right)
     compile_expr(bcs_list, expr.left)
     bcs_list.append(add_bcs)
+
+
+def compile_mul_expr(bcs_list, expr):
+    op = {
+        MulExpr.MulOp.MUL: MulStackItem.MulOp.MUL,
+        MulExpr.MulOp.DIV: MulStackItem.MulOp.DIV,
+        MulExpr.MulOp.MOD: MulStackItem.MulOp.MOD,
+    }
+    compile_expr(bcs_list, expr.right)
+    compile_expr(bcs_list, expr.left)
+    bcs_list.append(Mul(op[expr.op]))
 
 
 def compile_expr(bcs_list: list, expr):
@@ -22,6 +33,8 @@ def compile_expr(bcs_list: list, expr):
         raise MCLCompileError("you shouldn't be trying to compile a string")
     elif type(expr) is AddExpr:
         compile_add_expr(bcs_list, expr)
+    elif type(expr) is MulExpr:
+        compile_mul_expr(bcs_list, expr)
     elif type(expr) is Funccall:
         compile_funccall(bcs_list, expr)
 

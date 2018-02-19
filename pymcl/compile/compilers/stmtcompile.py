@@ -4,6 +4,7 @@ from pymcl.repr.stmt import ExprStmt, VarStmt, AssignStmt, BlockStmt
 
 
 def compile_stmt(bcs_list, stmt):
+    extra_functions = {}
     if type(stmt) == ExprStmt:
         stmt: ExprStmt
         if stmt.has_side_effects():
@@ -20,4 +21,5 @@ def compile_stmt(bcs_list, stmt):
     elif type(stmt) == BlockStmt:
         stmt: BlockStmt
         for i in stmt.code:
-            compile_stmt(bcs_list, i)
+            extra_functions.update(compile_stmt(bcs_list, i))
+    return extra_functions

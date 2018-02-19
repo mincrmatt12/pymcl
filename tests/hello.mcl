@@ -8,6 +8,7 @@ func void main() {
     i = i+1;
     int j = 3;
     i = j + i + 2 - 3;
+    i = i * 2 + 3;
 
     print("Hello World", i, j, 2, "abc"); # print output to all (/tellraw)
 }

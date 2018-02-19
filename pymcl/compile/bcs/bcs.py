@@ -1,6 +1,6 @@
 import abc
 
-from pymcl.compile.bcs.stack import IntStackItem, LocalStackItem, AddStackItem
+from pymcl.compile.bcs.stack import IntStackItem, LocalStackItem, AddStackItem, MulStackItem
 
 
 class Bytecode:
@@ -66,3 +66,13 @@ class Add(Bytecode):
         left = prev_stack[-1]
         right = prev_stack[-2]
         return prev_stack[:-2] + [AddStackItem(left, right, self.op)]
+
+
+class Mul(Bytecode):
+    def __init__(self, op: MulStackItem.MulOp):
+        self.op = op
+
+    def apply_stack(self, prev_stack):
+        left = prev_stack[-1]
+        right = prev_stack[-2]
+        return prev_stack[:-2] + [MulStackItem(left, right, self.op)]

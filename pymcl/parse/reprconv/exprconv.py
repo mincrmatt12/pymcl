@@ -17,6 +17,14 @@ def convert_funccall_node(node):
                          [convert_expr_node(x) for x in node.children[1].children])  # params
 
 
+def convert_mul_expr_node(node):
+    return expr.MulExpr(
+        convert_expr_node(node.children[0]),
+        convert_expr_node(node.children[2]),
+        expr.MulExpr.MulOp.from_str(str(node.children[1]))
+    )
+
+
 def convert_expr_node(parse_expr):
     node = parse_expr.children[0]
     if node.data == "atom":
@@ -25,6 +33,8 @@ def convert_expr_node(parse_expr):
         return convert_expr_node(node)
     elif node.data == "add_expr":
         return convert_add_expr_node(node)
+    elif node.data == "mul_expr":
+        return convert_mul_expr_node(node)
     elif node.data == "funccall":
         return convert_funccall_node(node)
 

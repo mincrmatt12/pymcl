@@ -51,6 +51,32 @@ class AddExpr(Expr):
             self.left.constant_value() - self.right.constant_value()
 
 
+class MulExpr(Expr):
+    class MulOp(enum.Enum):
+        MUL = lambda x, y: x * y
+        DIV = lambda x, y: x // y
+        MOD = lambda x, y: x % y
+
+        @staticmethod
+        def from_str(s):
+            return {
+                "*": MulExpr.MulOp.MUL,
+                "/": MulExpr.MulOp.DIV,
+                "%": MulExpr.MulOp.DIV
+            }[s]
+
+    def __init__(self, left: Expr, right: Expr, op: MulOp):
+        self.left = left
+        self.right = right
+        self.op = op
+
+    def is_constant(self):
+        return self.left.is_constant() and self.right.is_constant()
+
+    def constant_value(self):
+        return self.op(self.left.constant_value(), self.right.constant_value())
+
+
 class Funccall(Expr):
     def __init__(self, target, params):
         self.target = target

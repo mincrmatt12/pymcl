@@ -16,7 +16,11 @@ if __name__ == "__main__":
     for func in compilemanager.functions:
         print(f"func: {func}")
         print(compilemanager.functions[func].commands.get_content())
+        with open(f"output/{compilemanager.functions[func].commands.get_fname()}", "w") as f:
+            f.write(compilemanager.functions[func].commands.get_content())
 
-    for func in compilemanager.setup_functions:
+    for func in compilemanager.extra_functions:
         print(f"func: {func.name}")
         print(func.get_content())
+        with open(f"output/{func.get_fname()}", "w") as f:
+            f.write(func.get_content())

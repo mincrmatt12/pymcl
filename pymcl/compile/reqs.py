@@ -12,14 +12,19 @@ class Requirements(metaclass=abc.ABCMeta):
 
 
 class FunctionLocalRequirements(Requirements):
+    ENTFUNCNAME_PREFIX = "_fElc"
     FUNCNAME_PREFIX = "_fLc"
 
     def __init__(self, func):
         self.func = func
 
     def get_scoreboards(self):
-        return [
+        begin = [
             self.func.ns + "__" + self.func.name + FunctionLocalRequirements.FUNCNAME_PREFIX] if self.func.locals else []
+
+        for i in self.func.entity_locals:
+            begin.append(self.func.ns + "__" + self.func.name + FunctionLocalRequirements.ENTFUNCNAME_PREFIX)
+        return begin
 
 
 class FunctionStackRequirements(Requirements):

@@ -13,6 +13,7 @@ class Function:
         self.params = params
         self.name = name
         self.locals = []
+        self.entity_locals = []
         self.dependencies = []
         self.is_recursive = False
         self.code = code
@@ -24,7 +25,11 @@ class Function:
     def compute_locals(self):
         for stmt in self.code:
             if type(stmt) is VarStmt:
-                self.locals.append(stmt.assign_to)
+                stmt: VarStmt
+                if stmt.type_ == "int":
+                    self.locals.append(stmt.assign_to)
+                elif stmt.type_ == "entity":
+                    self.entity_locals.append(stmt.assign_to)
 
     def compute_recursive(self):
         self.is_recursive = False # todo: recursion checking

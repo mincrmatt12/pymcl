@@ -1,5 +1,5 @@
-import collections
-import multiprocessing
+
+import queue
 
 from pymcl.commands.compiler.compiler import compile_bcs
 from pymcl.commands.mcfunction import MCFunction
@@ -13,11 +13,10 @@ class CompileManager:
         self.parsetrees = trees
         self.functions = {}
         self.reqs = {}
-        self.function_queue = multiprocessing.Queue()
-        self.stdout_lock = multiprocessing.Lock()
-        self.compile_tasks = multiprocessing.JoinableQueue()
+        self.function_queue = queue.Queue()
+        self.compile_tasks = queue.Queue()
         self.compile_tasks.put(start)
-        self.setup_functions = []
+        self.extra_functions = []
 
     def compile(self, tree: ParseTree):
         # compile
@@ -30,8 +29,13 @@ class CompileManager:
 
             function.ns = ns
 
-            compile_stmt(function.bcs, function.code)
-            function.commands = MCFunction(compile_bcs(function.bcs, function), ns + "__" + function.name)
+            extra_functions = compile_stmt(function.bcs, function.code)
+            function.commands = MCFunction([], ns + "__" + function.name)
+            function.commands.commands = compile_bcs(function.bcs, function.commands)
+            for i in extra_functions:
+                f = MCFunction([], i)
+                f.commands = compile_bcs(extra_functions[i], f)
+                self.extra_functions.append(f)
 
             compiled_functions[ns + "::" + function.name] = function
 
@@ -41,16 +45,12 @@ class CompileManager:
         while not self.compile_tasks.empty():
             treename = self.compile_tasks.get()
             task = self.parsetrees[treename]
-            with self.stdout_lock:
-                print(f"Compiling {treename}")
+            print(f"Compiling {treename}")
             self.compile(task)
             self.compile_tasks.task_done()
 
-    def run(self, workers=4):
-        workers = min(workers, len(self.parsetrees))
-        #processes = [multiprocessing.Process(target=CompileManager.run_worker, args=(self,)) for x in range(workers)]
+    def run(self):
         self.run_worker()
-        self.compile_tasks.join()
         print("Generating setup")
         while not self.function_queue.empty():
             self.functions.update(self.function_queue.get())
@@ -62,4 +62,4 @@ class CompileManager:
             self.reqs[ns].extend(self.functions[i].get_requirements())
 
         for i in self.reqs:
-            self.setup_functions.append(generate_setup_function_for_reqset(self.reqs[i], i))
+            self.extra_functions.append(generate_setup_function_for_reqset(self.reqs[i], i))
