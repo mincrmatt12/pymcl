@@ -13,6 +13,7 @@ class Requirements(metaclass=abc.ABCMeta):
 
 class FunctionLocalRequirements(Requirements):
     ENTFUNCNAME_PREFIX = "_fElc"
+    ENTSFUNCNAME_PREFIX = "_fEsl"
     FUNCNAME_PREFIX = "_fLc"
 
     def __init__(self, func):
@@ -22,8 +23,11 @@ class FunctionLocalRequirements(Requirements):
         begin = [
             self.func.ns + "__" + self.func.name + FunctionLocalRequirements.FUNCNAME_PREFIX] if self.func.locals else []
 
-        for i in self.func.entity_locals:
+        if self.func.entity_locals is not []:
             begin.append(self.func.ns + "__" + self.func.name + FunctionLocalRequirements.ENTFUNCNAME_PREFIX)
+
+        if self.func.bcs.uses_selectors:
+            begin.append(self.func.ns + "__" + self.func.name + FunctionLocalRequirements.ENTSFUNCNAME_PREFIX)
         return begin
 
 

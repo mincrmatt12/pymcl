@@ -1,3 +1,4 @@
+from pymcl.compile.bcs.bcs import BcsList
 from pymcl.compile.reqs import FunctionLocalRequirements, FunctionStackRequirements
 from pymcl.repr.stmt import VarStmt, Stmt
 
@@ -17,7 +18,7 @@ class Function:
         self.dependencies = []
         self.is_recursive = False
         self.code = code
-        self.bcs = []
+        self.bcs = BcsList()
         self.commands = []
         self.returntype = returntype
         self.ns = ""

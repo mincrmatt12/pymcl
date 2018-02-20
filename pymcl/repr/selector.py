@@ -19,7 +19,7 @@ class SelectCount(SelectorClause):
         return f"limit={self.count}" if self.count != SelectCount.ANY else ""
 
 
-class SelectSort(enum.Enum, SelectorClause):
+class SelectSort(SelectorClause, enum.Enum):
     FAR = "furthest"
     NEAR = "nearest"
     RAND = "random"

@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from pymcl.compile.bcs.bcs import PrintOutputGlobally
+from pymcl.compile.bcs.bcs import PrintOutputGlobally, BcsList, PrintOutputLocally
 from pymcl.repr.expr import Funccall, Expr, StrConstant
 from .exprcompile import compile_expr
 
@@ -20,17 +20,18 @@ def get_print_args(bcs_list, params: List[Union[str, Expr]]):
     return print_args
 
 
-def compile_print(bcs_list, expr: Funccall):
+def compile_print(bcs_list: BcsList, expr: Funccall):
     if not expr.params:
         return
-    if False:
-        pass  # todo: entity check
-    else:
+    if expr.target == "print":
         bcs_list.append(PrintOutputGlobally(get_print_args(bcs_list, expr.params)))
+    else:
+        bcs_list.append(PrintOutputLocally(get_print_args(bcs_list, expr.params),
+                                           bcs_list.entity_locals.index(expr.target[:-len(".print")])))
 
 
 def compile_funccall(bcs_list, expr: Funccall):
-    if expr.target == "print":
+    if expr.target == "print" or expr.target.endswith(".print"):
         compile_print(bcs_list, expr)
     else:
         pass  # todo

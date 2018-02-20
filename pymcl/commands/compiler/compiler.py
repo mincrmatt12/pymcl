@@ -1,6 +1,6 @@
 from pymcl.commands.compiler.arithmetic import compile_add, compile_mul
-from pymcl.commands.stack.loadstore import LoadConstant, LoadLocal, StoreLocal
-from pymcl.commands.print import PrintOutputGloballyCommand
+from pymcl.commands.stack.loadstore import LoadConstant, LoadLocal, StoreLocal, StoreEntityLocal, EvalSelectorCommand
+from pymcl.commands.print import PrintOutputGloballyCommand, PrintOutputLocallyCommand
 import pymcl.compile.bcs.bcs as bcs_
 
 
@@ -17,6 +17,12 @@ def compile_bcs(bcs_list, function):
         elif type(bcs) == bcs_.StoreLocal:
             bcs: bcs_.StoreLocal
             commands.append(StoreLocal(function, bcs.local, len(stack)-1))
+        elif type(bcs) == bcs_.StoreEntity:
+            bcs: bcs_.StoreEntity
+            commands.append(StoreEntityLocal(function, bcs.i, len(stack)-1, stack))
+        elif type(bcs) == bcs_.EvalSelector:
+            bcs: bcs_.EvalSelector
+            commands.append(EvalSelectorCommand(function, bcs.sel_index, bcs.selector_text))
         elif type(bcs) == bcs_.Add:
             commands.append(compile_add(bcs_list, function, bcs, stack))
         elif type(bcs) == bcs_.Mul:
@@ -24,5 +30,8 @@ def compile_bcs(bcs_list, function):
         elif type(bcs) == bcs_.PrintOutputGlobally:
             bcs: bcs_.PrintOutputGlobally
             commands.append(PrintOutputGloballyCommand(bcs.params, function, len(stack)-bcs.popcount()))
+        elif type(bcs) == bcs_.PrintOutputLocally:
+            bcs: bcs_.PrintOutputLocally
+            commands.append(PrintOutputLocallyCommand(bcs.params, bcs.target, function, len(stack) - bcs.popcount()))
         stack = bcs.apply_stack(stack)
     return commands

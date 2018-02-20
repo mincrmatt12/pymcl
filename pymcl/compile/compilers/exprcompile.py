@@ -1,7 +1,8 @@
 from pymcl.compile import MCLCompileError
-from pymcl.compile.bcs.bcs import LoadConstant, LoadLocal, Add, Mul
+from pymcl.compile.bcs.bcs import LoadConstant, LoadLocal, Add, Mul, BcsList, LoadEntity, EvalSelector
 from pymcl.compile.bcs.stack import AddStackItem, MulStackItem
 from pymcl.repr.expr import IntConstant, StrConstant, AddExpr, Funccall, LocalExpr, MulExpr
+from pymcl.repr.selector import Selector
 
 
 def compile_add_expr(bcs_list, expr: AddExpr):
@@ -22,13 +23,16 @@ def compile_mul_expr(bcs_list, expr):
     bcs_list.append(Mul(op[expr.op]))
 
 
-def compile_expr(bcs_list: list, expr):
+def compile_expr(bcs_list: BcsList, expr):
     if type(expr) is IntConstant or (type(expr) != str and expr.is_constant()):
         bcs_list.append(LoadConstant(expr.constant_value()))
     elif type(expr) is LocalExpr:
         if "." in expr.target:
             raise NotImplementedError("haven't done full quals")
-        bcs_list.append(LoadLocal(expr.target))
+        if bcs_list.local_types[expr.target] == "int":
+            bcs_list.append(LoadLocal(expr.target))
+        else:
+            bcs_list.append(LoadEntity(bcs_list.entity_locals.index(expr.target)))
     elif type(expr) is StrConstant:
         raise MCLCompileError("you shouldn't be trying to compile a string")
     elif type(expr) is AddExpr:
@@ -37,6 +41,9 @@ def compile_expr(bcs_list: list, expr):
         compile_mul_expr(bcs_list, expr)
     elif type(expr) is Funccall:
         compile_funccall(bcs_list, expr)
+    elif type(expr) is Selector:
+        expr: Selector
+        bcs_list.append(EvalSelector(bcs_list.new_selector(), expr.get_entire_selector()))
 
 
 # resolve circular crap

@@ -37,13 +37,26 @@ def convert_expr_node(parse_expr):
         return convert_mul_expr_node(node)
     elif node.data == "funccall":
         return convert_funccall_node(node)
+    elif node.data == "selector":
+        return convert_selector(node)
 
 
 def convert_atom_node(atom):
     node = atom.children[0]
-    if isinstance(node, lark.Tree) and node.data == "qual":
-        return expr.LocalExpr(nameconv.convert_qual(node))
+    if isinstance(node, lark.Tree):
+        if node.data == "qual":
+            return expr.LocalExpr(nameconv.convert_qual(node))
+        elif node.data == "range":
+            if len(node.children) == 1:
+                return expr.Range(convert_expr_node(node.children[0]))
+            else:
+                return expr.Range(convert_expr_node(node.children[0]), convert_expr_node(node.children[1]))
+        elif node.data == "r_range":
+            return expr.Range(None, convert_expr_node(node.children[0]))
     elif node.type == "NUM":
         return expr.IntConstant(int(node))
     else:
         return expr.StrConstant(str(node)[1:-1])
+
+
+from .selectorconv import convert_selector

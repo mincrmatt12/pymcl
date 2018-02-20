@@ -15,6 +15,10 @@ class StackItem:
 
 
 class IntStackItem(StackItem):
+    pass
+
+
+class IntConstantStackItem(IntStackItem):
     def __init__(self, val):
         self.val = val
 
@@ -25,12 +29,12 @@ class IntStackItem(StackItem):
         return self.val
 
 
-class LocalStackItem(StackItem):
+class LocalStackItem(IntStackItem):
     def __init__(self, local):
         self.local = local
 
 
-class AddStackItem(StackItem):
+class AddStackItem(IntStackItem):
     class AddOp(enum.Enum):
         ADD = 1
         SUB = 2
@@ -40,8 +44,8 @@ class AddStackItem(StackItem):
         self.right = right
         self.op = op
 
-    def is_valid(self):
-        if not issubclass(self.left.__class__, IntStackItem) and issubclass(self.right.__class__, IntStackItem):
+    def validate(self):
+        if not (issubclass(self.left.__class__, IntStackItem) and issubclass(self.right.__class__, IntStackItem)):
             raise MCLCompileError('''add called on two non-int exprs''')
 
     def is_constant(self):
@@ -52,13 +56,13 @@ class AddStackItem(StackItem):
             self.left.constant_value() - self.right.constant_value()
 
 
-class MulStackItem(StackItem):
+class MulStackItem(IntStackItem):
     class MulOp(enum.Enum):
         MUL = lambda x, y: x * y
         DIV = lambda x, y: x // y
         MOD = lambda x, y: x % y
 
-    def __init__(self, left: IntStackItem, right: IntStackItem, op: MulOp):
+    def __init__(self, left: IntConstantStackItem, right: IntConstantStackItem, op: MulOp):
         self.left = left
         self.right = right
         self.op = op
@@ -72,3 +76,33 @@ class MulStackItem(StackItem):
 
     def constant_value(self):
         return self.op(self.left.constant_value(), self.right.constant_value())
+
+
+class EntityReferenceStackItem(StackItem):
+    def get_table_name(self):
+        pass
+
+    def get_table_index(self):
+        pass
+
+
+class LocalEntity(EntityReferenceStackItem):
+    def __init__(self, local_index):
+        self.local_index = local_index
+
+    def get_table_name(self):
+        return "_fElc"
+
+    def get_table_index(self):
+        return self.local_index
+
+
+class SelectorEntity(EntityReferenceStackItem):
+    def __init__(self, local_index):
+        self.local_index = local_index
+
+    def get_table_name(self):
+        return "_fEsl"
+
+    def get_table_index(self):
+        return self.local_index

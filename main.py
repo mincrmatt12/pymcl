@@ -2,7 +2,7 @@ from pymcl.compile.compilemanager import CompileManager
 from pymcl.parse.parsemanager import ParseManager, fname_to_rname
 
 if __name__ == "__main__":
-    in_file = "tests/hello.mcl"
+    in_file = "tests/players.mcl"
 
     parsemanager = ParseManager(in_file)
     parsemanager.run()

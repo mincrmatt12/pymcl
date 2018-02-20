@@ -1,9 +1,9 @@
-from pymcl.compile.bcs.bcs import StoreLocal
+from pymcl.compile.bcs.bcs import StoreLocal, StoreEntity, BcsList
 from pymcl.compile.compilers.exprcompile import compile_expr
 from pymcl.repr.stmt import ExprStmt, VarStmt, AssignStmt, BlockStmt
 
 
-def compile_stmt(bcs_list, stmt):
+def compile_stmt(bcs_list: BcsList, stmt):
     extra_functions = {}
     if type(stmt) == ExprStmt:
         stmt: ExprStmt
@@ -11,15 +11,22 @@ def compile_stmt(bcs_list, stmt):
             compile_expr(bcs_list, stmt.expr)
     elif type(stmt) == VarStmt:
         stmt: VarStmt
-        if stmt.type_ != "int":
-            raise NotImplementedError("todo: typing") # todo
-        compile_expr(bcs_list, stmt.expr)
-        bcs_list.append(StoreLocal(stmt.assign_to))
+        if stmt.type_ == "int":
+            compile_expr(bcs_list, stmt.expr)
+            bcs_list.append(StoreLocal(stmt.assign_to))
+        elif stmt.type_ == "entity":
+            compile_expr(bcs_list, stmt.expr)
+            bcs_list.entity_locals.append(stmt.assign_to)
+            bcs_list.append(StoreEntity(bcs_list.entity_locals.index(stmt.assign_to)))
+        bcs_list.local_types[stmt.assign_to] = stmt.type_
     elif type(stmt) == AssignStmt:
         compile_expr(bcs_list, stmt.expr)
-        bcs_list.append(StoreLocal(stmt.assign_to))
+        if bcs_list.local_types[stmt.stmt.assign_to] == "int":
+            bcs_list.append(StoreLocal(stmt.assign_to))
+        else:
+            bcs_list.append(StoreEntity(bcs_list.entity_locals.index(stmt.assign_to)))
     elif type(stmt) == BlockStmt:
         stmt: BlockStmt
         for i in stmt.code:
-            extra_functions.update(compile_stmt(bcs_list, i))
+            compile_stmt(bcs_list, i)
     return extra_functions

@@ -67,8 +67,9 @@ select_type : [NEG] IDENT
 
 type : IDENT (_TYPESEP IDENT)* 
 qual : IDENT (_VALSEP IDENT)*
-range : NUM ".." [NUM]
-      | [NUM] ".." NUM
+range : expr ".."
+      | ".." expr -> r_range
+      | expr ".." expr
 
 _TYPESEP : "::"
 _VALSEP : "."

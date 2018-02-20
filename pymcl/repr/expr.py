@@ -1,4 +1,5 @@
 import enum
+from typing import Optional
 
 
 class Expr:
@@ -86,3 +87,17 @@ class Funccall(Expr):
 class LocalExpr(Expr):
     def __init__(self, target):
         self.target = target
+
+
+class Range(Expr):
+    def __init__(self, min: Optional[Expr] = None, max: Optional[Expr] = None):
+        self.min = min
+        self.max = max
+
+    def is_constant(self):
+        return (self.min.is_constant() if self.min is not None else True) and (
+            self.max.is_constant() if self.max is not None else True)
+
+    def constant_value(self):
+        return [self.min.constant_value() if self.min is not None else None,
+                self.max.constant_value() if self.max is not None else None]
