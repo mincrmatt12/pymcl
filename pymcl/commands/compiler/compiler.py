@@ -1,7 +1,9 @@
 from pymcl.commands.compiler.arithmetic import compile_add, compile_mul
+from pymcl.commands.stack.entity import LoadLocalEntityPos
 from pymcl.commands.stack.loadstore import LoadConstant, LoadLocal, StoreLocal, StoreEntityLocal, EvalSelectorCommand
 from pymcl.commands.print import PrintOutputGloballyCommand, PrintOutputLocallyCommand
 import pymcl.compile.bcs.bcs as bcs_
+import pymcl.compile.bcs.entity as bcs_entity_
 
 
 def compile_bcs(bcs_list, function):
@@ -33,5 +35,10 @@ def compile_bcs(bcs_list, function):
         elif type(bcs) == bcs_.PrintOutputLocally:
             bcs: bcs_.PrintOutputLocally
             commands.append(PrintOutputLocallyCommand(bcs.params, bcs.target, function, len(stack) - bcs.popcount()))
+        elif type(bcs) == bcs_entity_.LoadEntityPosition:
+            bcs: bcs_entity_.LoadEntityPosition
+            commands.append(LoadLocalEntityPos(
+                function, bcs.i, len(stack), bcs.p_var
+            ))
         stack = bcs.apply_stack(stack)
     return commands
