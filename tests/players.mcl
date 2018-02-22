@@ -7,6 +7,5 @@ func void main() {
     print("Selector example!");
 
     entity nearby = |select 1 player, dist <= 4|; # dec
-    entity random = |select 2 random bat, dist == ..3|;
-    nearby.print("You are near me!"); # print = tellraw
+    nearby.print("You are near me! x+1: ", nearby.x + 1); # print = tellraw
 }

@@ -106,3 +106,14 @@ class SelectorEntity(EntityReferenceStackItem):
 
     def get_table_index(self):
         return self.local_index
+
+
+class EntityPosition(IntStackItem):
+    class PosVar(enum.Enum):
+        X = 1
+        Y = 2
+        Z = 3
+
+    def __init__(self, local_i, pos_var: PosVar):
+        self.local_i = local_i
+        self.pos_var = pos_var
