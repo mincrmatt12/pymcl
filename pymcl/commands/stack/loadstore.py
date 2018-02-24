@@ -57,6 +57,7 @@ class StoreEntityLocal(CommandBase):
         ]
 
 
+
 class EvalSelectorCommand(CommandBase):
     def __init__(self, function, selector_index, selector_text):
         self.function = function
