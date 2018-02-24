@@ -13,7 +13,7 @@ class Requirements(metaclass=abc.ABCMeta):
 
 class FunctionLocalRequirements(Requirements):
     ENTFUNCNAME_PREFIX = "_fElc"
-    ENTSFUNCNAME_PREFIX = "_fEsl"
+    ENTSFUNCNAME_PREFIX = "_fEls"
     FUNCNAME_PREFIX = "_fLc"
 
     def __init__(self, func):

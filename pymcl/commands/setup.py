@@ -1,4 +1,4 @@
-from pymcl.commands.command import CommandBase
+from pymcl.commands.command import CommandBase, scoreboard_obsfucate
 
 
 class SetupScoreboardCommand(CommandBase):
@@ -6,6 +6,6 @@ class SetupScoreboardCommand(CommandBase):
         self.scoreboard = scoreboard
 
     def get_commands(self):
-        return [f"scoreboard objectives add {self.scoreboard} dummy"]
+        return [f"scoreboard objectives add {scoreboard_obsfucate(self.scoreboard)} dummy"]
 
 

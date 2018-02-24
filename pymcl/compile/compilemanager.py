@@ -5,6 +5,7 @@ from pymcl.commands.compiler.compiler import compile_bcs
 from pymcl.commands.mcfunction import MCFunction
 from pymcl.compile.compilers.stmtcompile import compile_stmt
 from pymcl.compile.reqs import generate_setup_function_for_reqset
+from pymcl.datapack.datapack import Datapack
 from pymcl.repr.tree import ParseTree
 
 
@@ -17,6 +18,7 @@ class CompileManager:
         self.compile_tasks = queue.Queue()
         self.compile_tasks.put(start)
         self.extra_functions = []
+        self.datapack = Datapack()
 
     def compile(self, tree: ParseTree):
         compiled_functions = {}
@@ -57,3 +59,9 @@ class CompileManager:
             self.reqs[ns].extend(self.functions[i].get_requirements())
         for i in self.reqs:
             self.extra_functions.append(generate_setup_function_for_reqset(self.reqs[i], i))
+
+        print("Generating datapack files")
+        for i in self.extra_functions:
+            self.datapack.add_file(i)
+        for func in self.functions.values():
+            self.datapack.add_file(func.commands)

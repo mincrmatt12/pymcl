@@ -102,7 +102,7 @@ class SelectorEntity(EntityReferenceStackItem):
         self.local_index = local_index
 
     def get_table_name(self):
-        return "_fEsl"
+        return "_fEls"
 
     def get_table_index(self):
         return self.local_index

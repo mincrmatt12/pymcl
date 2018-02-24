@@ -78,6 +78,6 @@ class PrintOutputLocallyCommand(CommandBase):
             else:
                 tellraw_components.append(format_json_score(add_suffix_function(self.function, '_fSk'), f"s{i.i}"))
         return [
-            f"tellraw {get_selector_for_entityref(LocalEntity(self.target), self.function)} "
+            f"tellraw {get_selector_for_entityref(LocalEntity(self.target), self.function, type_='player')} "
             f"{json.dumps(tellraw_components)}"
         ]

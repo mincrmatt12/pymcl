@@ -52,7 +52,7 @@ class StoreEntityLocal(CommandBase):
         return [
             f"scoreboard players set {get_selector_for_entityref(self.target, self.function)} "
             f"{add_suffix_function(self.function, '_fElc')} -1",
-            f"scoreboard players set {get_selector_for_entityref(self.sitem, self.function)} "
+            f"scoreboard players set {get_selector_for_entityref(self.sitem, self.function, limit=1)} "
             f"{add_suffix_function(self.function, '_fElc')} {self.local_index}"
         ]
 

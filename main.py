@@ -24,3 +24,6 @@ if __name__ == "__main__":
         print(func.get_content())
         with open(f"output/{func.get_fname()}", "w") as f:
             f.write(func.get_content())
+
+    print("Writing output.zip")
+    compilemanager.datapack.generate_datapack()

@@ -1,3 +1,6 @@
+from pymcl.datapack.packfile import SimplePackFile
+
+
 class MCFunction:
     def __init__(self, commands, name):
         self.commands = commands
@@ -14,3 +17,6 @@ class MCFunction:
 
     def get_fname(self):
         return self.name + ".mcfunction"
+
+    def to_packfile(self):
+        return SimplePackFile(f"mcl:functions/{self.get_fname()}", self.get_content())
