@@ -1,5 +1,6 @@
 import enum
 from typing import Optional
+import operator
 
 
 class Expr:
@@ -54,9 +55,9 @@ class AddExpr(Expr):
 
 class MulExpr(Expr):
     class MulOp(enum.Enum):
-        MUL = lambda x, y: x * y
-        DIV = lambda x, y: x // y
-        MOD = lambda x, y: x % y
+        MUL = operator.mul
+        DIV = operator.floordiv
+        MOD = operator.mod
 
         @staticmethod
         def from_str(s):
@@ -75,6 +76,7 @@ class MulExpr(Expr):
         return self.left.is_constant() and self.right.is_constant()
 
     def constant_value(self):
+        # noinspection PyCallingNonCallable
         return self.op(self.left.constant_value(), self.right.constant_value())
 
 

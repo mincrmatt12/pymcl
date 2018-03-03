@@ -7,5 +7,9 @@ func void main() {
     print("Selector example!");
 
     entity nearby = |select 1 player, dist <= 4|; # dec
-    nearby.print("You are near me! x+1: ", nearby.x + 1); # print = tellraw
+    int var = nearby.x + 3;
+    entity marker = |select 1 armor_stand, dist > 2|;
+    var = var + (marker.z / 10);
+
+    nearby.print("You are near me! var: ", var); # print = tellraw
 }

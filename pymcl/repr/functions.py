@@ -32,7 +32,7 @@ class Function:
                 elif stmt.type_ == "entity":
                     self.entity_locals.append(stmt.assign_to)
 
-    def compute_recursive(self):
+    def compute_recursive(self, functions):
         self.is_recursive = False # todo: recursion checking
 
     def get_requirements(self):
