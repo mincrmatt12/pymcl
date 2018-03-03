@@ -4,7 +4,7 @@
 namespace mclselectors # defines function namespace
 
 func void other() {
-    print("I am other");`
+    print("I am other");
 }
 
 func void main() {

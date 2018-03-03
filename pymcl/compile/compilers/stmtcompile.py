@@ -21,7 +21,7 @@ def compile_stmt(bcs_list: BcsList, stmt):
         bcs_list.local_types[stmt.assign_to] = stmt.type_
     elif type(stmt) == AssignStmt:
         compile_expr(bcs_list, stmt.expr)
-        if bcs_list.local_types[stmt.stmt.assign_to] == "int":
+        if bcs_list.local_types[stmt.assign_to] == "int":
             bcs_list.append(StoreLocal(stmt.assign_to))
         else:
             bcs_list.append(StoreEntity(bcs_list.entity_locals.index(stmt.assign_to)))

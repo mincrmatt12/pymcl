@@ -1,4 +1,5 @@
 import enum
+import operator
 
 from pymcl.compile import MCLCompileError
 
@@ -58,9 +59,9 @@ class AddStackItem(IntStackItem):
 
 class MulStackItem(IntStackItem):
     class MulOp(enum.Enum):
-        MUL = lambda x, y: x * y
-        DIV = lambda x, y: x // y
-        MOD = lambda x, y: x % y
+        MUL = operator.mul
+        DIV = operator.floordiv
+        MOD = operator.mod
 
     def __init__(self, left: IntConstantStackItem, right: IntConstantStackItem, op: MulOp):
         self.left = left
