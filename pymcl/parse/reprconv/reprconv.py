@@ -3,11 +3,14 @@ from pymcl.parse.reprconv import exprconv, nameconv
 from pymcl.repr import tree, stmt, functions, expr
 
 
+RESERVED_NAMES = ["print"]
+
+
 def to_repr_function(clause):
     params = []
     returntype = nameconv.convert_type(clause.children[0].children[0])
     name = str(clause.children[0].children[1])
-    if name == "print":
+    if name in RESERVED_NAMES:
         raise MCLParseError('''you can't define a function called print''')
     for i in range(0, len(clause.children[1].children), 2):
         params.append(functions.Param(nameconv.convert_type(clause.children[1].children[i]),
